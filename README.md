@@ -35,10 +35,13 @@ git clone https://github.com/suwidnyana/Uas_-KecerdasanArtifisial
   ```
 
 3. Install dependencies:
+ ```
 pip install -r requirements.txt
+ ```
+  ```
 pip install flask numpy matplotlib scikit-fuzzy
 
-
+ ```
 ---
 
 ## 🚀 Menjalankan Aplikasi
