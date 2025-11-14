@@ -63,11 +63,11 @@ flask run
 ## 📂 Struktur Folder
 
 Uas-KecerdasanArtifisial/
-│── app.py
-│── static/
+├── app.py
+├── static/
 │ └── img/
 │ └── fuzzy_graph.png
-│── templates/
+├── templates/
 │ ├── index.html
 │ ├── base.html
 │ ├── grafik.html
