@@ -13,3 +13,6 @@ Sebelum menjalankan proyek ini, pastikan kamu telah menginstal:
   Biasanya sudah terinstal bersama Python. Untuk memastikan:
   ```bash
   pip --version
+  
+git clone https://github.com/username/FuzzyPersediaan.git
+cd FuzzyPersediaan
