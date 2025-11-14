@@ -1,18 +1,24 @@
-# Fuzzy Persediaan – Sistem Logika Fuzzy untuk Penentuan Produksi  
-Implementasi sistem logika fuzzy menggunakan **metode Tsukamoto** untuk menentukan jumlah produksi berdasarkan **permintaan** dan **persediaan**.  
-Aplikasi dibangun menggunakan **Python**, **Flask**, dan visualisasi dengan **Matplotlib**.
+# Fuzzy Persediaan - Sistem Logika Fuzzy untuk Produksi
+
+Proyek ini adalah implementasi sistem logika fuzzy menggunakan metode Tsukamoto untuk menentukan jumlah produksi berdasarkan permintaan dan persediaan. Dibangun dengan Python dan Flask, serta visualisasi menggunakan Matplotlib.
 
 ---
 
-## 📦 Persiapan Lingkungan
+## 🛠️ Persiapan Sebelum Menjalankan
 
-Pastikan kamu telah menginstal:
+Sebelum menjalankan proyek ini, pastikan kamu telah menginstal:
 
-### 1. **Python 3.x**  
-Download melalui: https://www.python.org/downloads/  
-Pastikan opsi **Add to PATH** dicentang saat instalasi.
+- **Python 3.x**  
+  Unduh dari [python.org](https://www.python.org/downloads/) dan pastikan sudah ditambahkan ke PATH.
+- **pip** (Python package installer)  
+  Biasanya sudah terinstal bersama Python. Untuk memastikan, jalankan:
 
-### 2. **pip**  
-Biasanya sudah terpasang bersama Python. Cek dengan:
-```bash
-pip --version
+
+
+---
+
+## 📦 Instalasi dan Setup
+
+1. Clone repository:
+git clone https://github.com/username/FuzzyPersediaan.git
+cd FuzzyPersediaan
