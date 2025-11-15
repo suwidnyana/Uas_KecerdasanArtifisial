@@ -85,7 +85,7 @@ Uas-KecerdasanArtifisial/
 
 ## ⚙️ Catatan Penting
 
-- Proyek ini menggunakan backend Matplotlib non-GUI (Agg) agar kompatibel di semua sistem operasi.
+- Proyek ini menggunakan python versi 3.10
 - 
 - 
 
