@@ -8,6 +8,11 @@ import os
 
 app = Flask(__name__)
 
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+
+
 # Buat folder static jika belum ada
 if not os.path.exists('static'):
     os.makedirs('static')
