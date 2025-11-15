@@ -20,7 +20,9 @@ Sebelum menjalankan proyek ini, pastikan kamu telah menginstal:
 ## 📦 Instalasi dan Setup
 
 1. Clone repository:
+```
 git clone https://github.com/suwidnyana/Uas_-KecerdasanArtifisial
+```
 
 2. Buat dan aktifkan virtual environment:
 - **Windows:**
