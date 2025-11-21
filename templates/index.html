@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Fuzzy Penilaian Kualitas Layanan Mobile Banking{% endblock %}
+{% block title %}Fuzzy Penilaian Mobile Banking{% endblock %}
 
 {% block content %}
 
 <h2>Penilaian Kualitas Layanan Mobile Banking</h2>
 
 <form action="/" method="post">
-    
+
     <label for="rating">Rating Pengguna (0–5):</label>
     <input type="number" step="0.1" name="rating" min="0" max="5" required>
 
@@ -22,7 +22,7 @@
 
 {% if hasil is not none %}
     <h3>Skor Kualitas Layanan: {{ hasil }}</h3>
-    <img src="{{ url_for('static', filename='img/fuzzy_graph_new.png') }}" width="500">
+    <img src="{{ url_for('static', filename='img/fuzzy_graph_new.png') }}" alt="grafik">
 {% endif %}
 
 {% endblock %}
