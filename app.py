@@ -25,19 +25,31 @@ quality_x = np.arange(0, 101, 1)
 # =============================
 
 # --- Rating ---
-rating_buruk = fuzzy.gaussmf(rating_x, 0.8, 0.6)
-rating_normal = fuzzy.gbellmf(rating_x, 1.2, 3, 2.5)
-rating_baik = fuzzy.gaussmf(rating_x, 4.3, 0.5)
+rating_buruk  = fuzzy.trapmf(rating_x, [0, 0, 1, 2])
+rating_normal = fuzzy.trapmf(rating_x, [1, 2, 3, 4])
+rating_baik   = fuzzy.trapmf(rating_x, [3, 4, 5, 5])
 
 # --- Crash ---
-crash_rendah = fuzzy.sigmf(crash_x, 8, -0.3)
-crash_sedang = fuzzy.gaussmf(crash_x, 20, 6)
-crash_tinggi = fuzzy.sigmf(crash_x, 30, 0.3)
+crash_rendah = fuzzy.trapmf(crash_x, [0, 0, 10, 20])
+crash_sedang = fuzzy.trapmf(crash_x, [10, 20, 30, 40])
+crash_tinggi = fuzzy.trapmf(crash_x, [30, 40, 50, 50])
 
-# --- Keluhan ---
-keluhan_sedikit = fuzzy.trapmf(keluhan_x, [0, 0, 40, 80])
-keluhan_sedang = fuzzy.trapmf(keluhan_x, [60, 120, 160, 220])
-keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 240, 300, 300])
+
+# --- Keluhan (Smooth & Clean Version) ---
+
+# Sedikit: tinggi 0–60, turun halus hingga 120
+keluhan_sedikit = fuzzy.trapmf(keluhan_x, [0, 0, 60, 120])
+
+# Sedang: overlap 60–120, puncak 150, turun halus ke 240
+keluhan_sedang = fuzzy.trapmf(keluhan_x, [60, 120, 150, 240])
+
+# Banyak: naik halus dari 200, plateau 260–300
+keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 260, 300, 300])
+
+# # --- Keluhan ---
+# keluhan_sedikit = fuzzy.trapmf(keluhan_x, [0, 0, 40, 80])
+# keluhan_sedang = fuzzy.trapmf(keluhan_x, [60, 120, 160, 220])
+# keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 240, 300, 300])
 
 # --- Quality ---
 quality_buruk = fuzzy.sigmf(quality_x, 30, -0.2)
@@ -55,7 +67,7 @@ def generate_graph():
     plt.plot(rating_x, rating_buruk, label="Buruk")
     plt.plot(rating_x, rating_normal, label="Normal")
     plt.plot(rating_x, rating_baik, label="Baik")
-    plt.title("Rating Pengguna (Baru)")
+    plt.title("Rating Pengguna")
     plt.legend(); plt.grid(True)
 
     # Crash
@@ -63,15 +75,15 @@ def generate_graph():
     plt.plot(crash_x, crash_rendah, label="Rendah")
     plt.plot(crash_x, crash_sedang, label="Sedang")
     plt.plot(crash_x, crash_tinggi, label="Tinggi")
-    plt.title("Jumlah Crash (Baru)")
+    plt.title("Jumlah Crash")
     plt.legend(); plt.grid(True)
 
     # Keluhan
     plt.subplot(3, 1, 3)
-    plt.plot(keluhan_x, keluhan_sedikit, label="Sedikit")
+    plt.plot(keluhan_x, keluhan_sedikit, label="Sedikit") 
     plt.plot(keluhan_x, keluhan_sedang, label="Sedang")
     plt.plot(keluhan_x, keluhan_banyak, label="Banyak")
-    plt.title("Jumlah Keluhan (Baru)")
+    plt.title("Jumlah Keluhan Pengguna")
     plt.legend(); plt.grid(True)
 
     plt.tight_layout()
@@ -86,7 +98,7 @@ generate_graph()
 def fuzzy_inference(rating, crash, keluhan):
 
     # Degree of membership
-    Rb = fuzzy.interp_membership(rating_x, rating_buruk, rating)
+    Rb = fuzzy.interp_membership(rating_x, rating_buruk, rating) 
     Rn = fuzzy.interp_membership(rating_x, rating_normal, rating)
     Rk = fuzzy.interp_membership(rating_x, rating_baik, rating)
 
@@ -130,8 +142,12 @@ def fuzzy_inference(rating, crash, keluhan):
 # 5. Flask Routes
 # =============================
 @app.route('/', methods=['GET', 'POST'])
+
+
+
 def index():
     result = None
+    rating = crash = keluhan = None
 
     if request.method == 'POST':
         rating = float(request.form['rating'])
@@ -141,7 +157,19 @@ def index():
         score = fuzzy_inference(rating, crash, keluhan)
         result = int(round(score))
 
-    return render_template("index.html", hasil=result)
+    return render_template(
+        "index.html",
+        hasil=result,
+          input_rating=format_value(rating),
+        input_crash=format_value(crash),
+        input_keluhan=format_value(keluhan)
+    )
+
+
+def format_value(x):
+    if x is None:
+        return None
+    return int(x) if float(x).is_integer() else x
 
 
 @app.route('/grafik')
