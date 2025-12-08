@@ -52,18 +52,18 @@ keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 260, 300, 300])
 # keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 240, 300, 300])
 
 # --- Quality ---
-quality_buruk = fuzzy.sigmf(quality_x, 30, -0.2)
-quality_cukup = fuzzy.gaussmf(quality_x, 55, 10)
-quality_baik = fuzzy.sigmf(quality_x, 70, 0.2)
+quality_buruk = fuzzy.trapmf(quality_x, [0, 0, 20, 40])
+quality_cukup = fuzzy.trapmf(quality_x, [30, 45, 60, 75])
+quality_baik = fuzzy.trapmf(quality_x, [60, 75, 100, 100])
 
 # =============================
 # 3. Generate GRAPH (New Style)
 # =============================
 def generate_graph():
-    plt.figure(figsize=(10, 12))
+    plt.figure(figsize=(10, 16))
 
     # Rating
-    plt.subplot(3, 1, 1)
+    plt.subplot(4, 1, 1)
     plt.plot(rating_x, rating_buruk, label="Buruk")
     plt.plot(rating_x, rating_normal, label="Normal")
     plt.plot(rating_x, rating_baik, label="Baik")
@@ -71,7 +71,7 @@ def generate_graph():
     plt.legend(); plt.grid(True)
 
     # Crash
-    plt.subplot(3, 1, 2)
+    plt.subplot(4, 1, 2)
     plt.plot(crash_x, crash_rendah, label="Rendah")
     plt.plot(crash_x, crash_sedang, label="Sedang")
     plt.plot(crash_x, crash_tinggi, label="Tinggi")
@@ -79,11 +79,19 @@ def generate_graph():
     plt.legend(); plt.grid(True)
 
     # Keluhan
-    plt.subplot(3, 1, 3)
-    plt.plot(keluhan_x, keluhan_sedikit, label="Sedikit") 
+    plt.subplot(4, 1, 3)
+    plt.plot(keluhan_x, keluhan_sedikit, label="Sedikit")
     plt.plot(keluhan_x, keluhan_sedang, label="Sedang")
     plt.plot(keluhan_x, keluhan_banyak, label="Banyak")
-    plt.title("Jumlah Keluhan Pengguna")
+    plt.title("Jumlah Keluhan")
+    plt.legend(); plt.grid(True)
+
+    # Quality
+    plt.subplot(4, 1, 4)
+    plt.plot(quality_x, quality_buruk, label="Buruk")
+    plt.plot(quality_x, quality_cukup, label="Cukup")
+    plt.plot(quality_x, quality_baik, label="Baik")
+    plt.title("Output Kualitas Layanan")
     plt.legend(); plt.grid(True)
 
     plt.tight_layout()
