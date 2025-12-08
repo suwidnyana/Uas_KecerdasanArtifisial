@@ -20,8 +20,17 @@
     <button type="submit">Hitung Kualitas</button>
 </form>
 
+
 {% if hasil is not none %}
     <h3>Skor Kualitas Layanan: {{ hasil }}</h3>
+
+    <div class="card" style="padding:15px; background:#f9f9f9; border-radius:8px;">
+        <h4>Data Input Kamu</h4>
+        <p><b>Rating Pengguna:</b> {{ input_rating }}</p>
+        <p><b>Crash per Hari:</b> {{ input_crash }}</p>
+        <p><b>Keluhan per Hari:</b> {{ input_keluhan }}</p>
+    </div>
+
     <img src="{{ url_for('static', filename='img/fuzzy_graph_new.png') }}" alt="grafik">
 {% endif %}
 
