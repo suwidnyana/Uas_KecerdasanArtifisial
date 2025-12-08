@@ -142,6 +142,9 @@ def fuzzy_inference(rating, crash, keluhan):
 # 5. Flask Routes
 # =============================
 @app.route('/', methods=['GET', 'POST'])
+
+
+
 def index():
     result = None
     rating = crash = keluhan = None
@@ -157,10 +160,16 @@ def index():
     return render_template(
         "index.html",
         hasil=result,
-        input_rating=rating,
-        input_crash=crash,
-        input_keluhan=keluhan
+          input_rating=format_value(rating),
+        input_crash=format_value(crash),
+        input_keluhan=format_value(keluhan)
     )
+
+
+def format_value(x):
+    if x is None:
+        return None
+    return int(x) if float(x).is_integer() else x
 
 
 @app.route('/grafik')
