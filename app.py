@@ -105,46 +105,93 @@ generate_graph()
 # =============================
 def fuzzy_inference(rating, crash, keluhan):
 
-    # Degree of membership
-    Rb = fuzzy.interp_membership(rating_x, rating_buruk, rating) 
+    # ==========================
+    # 1. DEGREE OF MEMBERSHIP
+    # ==========================
+
+    # Rating
+    Rb = fuzzy.interp_membership(rating_x, rating_buruk, rating)
     Rn = fuzzy.interp_membership(rating_x, rating_normal, rating)
     Rk = fuzzy.interp_membership(rating_x, rating_baik, rating)
 
-    C_low = fuzzy.interp_membership(crash_x, crash_rendah, crash)
-    C_mid = fuzzy.interp_membership(crash_x, crash_sedang, crash)
+    # Crash
+    C_low  = fuzzy.interp_membership(crash_x, crash_rendah, crash)
+    C_mid  = fuzzy.interp_membership(crash_x, crash_sedang, crash)
     C_high = fuzzy.interp_membership(crash_x, crash_tinggi, crash)
 
-    K_low = fuzzy.interp_membership(keluhan_x, keluhan_sedikit, keluhan)
-    K_mid = fuzzy.interp_membership(keluhan_x, keluhan_sedang, keluhan)
+    # Keluhan
+    K_low  = fuzzy.interp_membership(keluhan_x, keluhan_sedikit, keluhan)
+    K_mid  = fuzzy.interp_membership(keluhan_x, keluhan_sedang, keluhan)
     K_high = fuzzy.interp_membership(keluhan_x, keluhan_banyak, keluhan)
 
-    rules = []
+    # ==========================
+    # 2. RULES
+    # ==========================
 
-    # RULES (Baru)
-    rules.append( min(Rb, max(C_high, K_high)) )   # buruk
-    rules.append( min(Rb, K_mid) )                 # buruk
-    rules.append( min(Rn, C_high) )                # buruk
-
-    rules.append( min(Rn, C_mid) )                 # cukup
-    rules.append( min(Rn, K_mid) )                 # cukup
-
-    rules.append( min(Rk, C_low, K_low) )          # baik
-    rules.append( min(Rk, C_low) )                 # baik
-    rules.append( min(Rk, K_low) )                 # baik
-
-    # Mapping ke output
-    outputs = [
-        fuzzy.defuzz(quality_x, np.fmin(r, quality_buruk), 'centroid') if r>0 else 0 for r in rules[:3]
-    ] + [
-        fuzzy.defuzz(quality_x, np.fmin(r, quality_cukup), 'centroid') if r>0 else 0 for r in rules[3:5]
-    ] + [
-        fuzzy.defuzz(quality_x, np.fmin(r, quality_baik), 'centroid') if r>0 else 0 for r in rules[5:]
+    # --- BURUK ---
+    rules_buruk = [
+        min(Rb, max(C_high, K_high)),   # rating buruk + crash/keluhan tinggi
+        min(Rb, K_mid),                 # rating buruk + keluhan sedang
+        min(Rn, C_high),                # rating normal + crash tinggi
     ]
 
-    # Weighted average
+    # --- CUKUP ---
+    rules_cukup = [
+        min(Rn, C_mid),    # rating normal + crash sedang
+        min(Rn, K_mid),    # rating normal + keluhan sedang
+    ]
+
+    # --- BAIK ---
+    rules_baik = [
+        min(Rk, C_low, K_low),   # rating baik, crash rendah, keluhan rendah
+        min(Rk, C_low),          # rating baik + crash rendah
+        min(Rk, K_low),          # rating baik + keluhan rendah
+    ]
+
+    # ==========================
+    # 3. FALLBACK RULE (PENTING)
+    # ==========================
+    # Jika crash tinggi ATAU keluhan tinggi → otomatis kualitas buruk.
+    fallback_buruk = max(C_high, K_high)
+    rules_buruk.append(fallback_buruk)
+
+    # Gabungkan semua rules
+    rules = rules_buruk + rules_cukup + rules_baik
+
+    # ==========================
+    # 4. DEFUZZIFICATION
+    # ==========================
+
+    # Mapping tiap rule ke output-nya
+    outputs = []
+
+    # 3 rule pertama + fallback = buruk
+    for r in rules_buruk:
+        if r > 0:
+            outputs.append(fuzzy.defuzz(quality_x, np.fmin(r, quality_buruk), 'centroid'))
+        else:
+            outputs.append(0)
+
+    # Cukup
+    for r in rules_cukup:
+        if r > 0:
+            outputs.append(fuzzy.defuzz(quality_x, np.fmin(r, quality_cukup), 'centroid'))
+        else:
+            outputs.append(0)
+
+    # Baik
+    for r in rules_baik:
+        if r > 0:
+            outputs.append(fuzzy.defuzz(quality_x, np.fmin(r, quality_baik), 'centroid'))
+        else:
+            outputs.append(0)
+
+    # ==========================
+    # 5. WEIGHTED AVERAGE
+    # ==========================
+
     score = np.sum(np.array(rules) * np.array(outputs)) / (np.sum(rules) + 1e-9)
     return score
-
 
 # =============================
 # 5. Flask Routes
