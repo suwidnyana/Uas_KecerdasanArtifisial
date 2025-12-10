@@ -16,12 +16,12 @@ if not os.path.exists('static/img'):
 # 1. Universe Variables
 # =============================
 rating_x  = np.arange(0, 5.01, 0.01)
-crash_x   = np.arange(0, 51, 5)
+crash_x   = np.arange(0, 51, 1)
 keluhan_x = np.arange(0, 301, 1)
 quality_x = np.arange(0, 101, 1)
 
 # =============================
-# 2. Membership Function (NEW)
+# 2. Membership Function
 # =============================
 
 # --- Rating ---
@@ -35,26 +35,18 @@ crash_sedang = fuzzy.trapmf(crash_x, [10, 20, 30, 40])
 crash_tinggi = fuzzy.trapmf(crash_x, [30, 40, 50, 50])
 
 
-# --- Keluhan (Smooth & Clean Version) ---
-
-# Sedikit: tinggi 0–60, 
+# --- Keluhan ---
 keluhan_sedikit = fuzzy.trapmf(keluhan_x, [0, 0, 60, 120])
-
-# Sedang: overlap 60–120, puncak 150, 
 keluhan_sedang = fuzzy.trapmf(keluhan_x, [60, 120, 150, 240])
-
-# Banyak: naik dari 200, 
 keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 260, 300, 300])
-
 
 # --- Quality ---
 quality_buruk = fuzzy.trapmf(quality_x, [0, 0, 20, 40])
 quality_cukup = fuzzy.trapmf(quality_x, [30, 45, 60, 75])
 quality_baik = fuzzy.trapmf(quality_x, [60, 75, 100, 100])
 
-
 # =============================
-# 3. Generate GRAPH (New Style)
+# 3. Generate GRAPH
 # =============================
 def generate_graph():
     plt.figure(figsize=(10, 16))
@@ -103,7 +95,7 @@ generate_graph()
 def fuzzy_inference(rating, crash, keluhan):
 
     # ==========================
-    # 1. DEGREE OF MEMBERSHIP
+    # 1. Menghitung Derajat Keanggotaan
     # ==========================
 
     # Rating
@@ -130,17 +122,12 @@ def fuzzy_inference(rating, crash, keluhan):
         min(Rb, max(C_high, K_high)),   # rating buruk + crash/keluhan tinggi
         min(Rb, K_mid),                 # rating buruk + keluhan sedang
         min(Rn, C_high),                # rating normal + crash tinggi
-        # fallback: jika crash atau keluhan tinggi tanpa peduli rating -> buruk
-        max(C_high, K_high)
     ]
 
     # --- CUKUP ---
     rules_cukup = [
         min(Rn, C_mid),    # rating normal + crash sedang
         min(Rn, K_mid),    # rating normal + keluhan sedang
-        
-         # RULE BARU!!!
-        min(Rn, C_low, K_low) # rating normal + crash rendah + keluhan rendah
     ]
 
     # --- BAIK ---
@@ -151,7 +138,7 @@ def fuzzy_inference(rating, crash, keluhan):
     ]
 
     # ==========================
-    # 3. FALLBACK RULE (PENTING)
+    # 3. FALLBACK RULE
     # ==========================
     # Jika crash tinggi ATAU keluhan tinggi → otomatis kualitas buruk.
     fallback_buruk = max(C_high, K_high)
@@ -194,6 +181,7 @@ def fuzzy_inference(rating, crash, keluhan):
 
     score = np.sum(np.array(rules) * np.array(outputs)) / (np.sum(rules) + 1e-9)
     return score
+
 
 # =============================
 # 5. Flask Routes
