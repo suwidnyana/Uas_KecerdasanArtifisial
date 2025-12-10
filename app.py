@@ -37,19 +37,15 @@ crash_tinggi = fuzzy.trapmf(crash_x, [30, 40, 50, 50])
 
 # --- Keluhan (Smooth & Clean Version) ---
 
-# Sedikit: tinggi 0–60, turun halus hingga 120
+# Sedikit: tinggi 0–60, 
 keluhan_sedikit = fuzzy.trapmf(keluhan_x, [0, 0, 60, 120])
 
-# Sedang: overlap 60–120, puncak 150, turun halus ke 240
+# Sedang: overlap 60–120, puncak 150, 
 keluhan_sedang = fuzzy.trapmf(keluhan_x, [60, 120, 150, 240])
 
-# Banyak: naik halus dari 200, plateau 260–300
+# Banyak: naik dari 200, 
 keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 260, 300, 300])
 
-# # --- Keluhan ---
-# keluhan_sedikit = fuzzy.trapmf(keluhan_x, [0, 0, 40, 80])
-# keluhan_sedang = fuzzy.trapmf(keluhan_x, [60, 120, 160, 220])
-# keluhan_banyak = fuzzy.trapmf(keluhan_x, [200, 240, 300, 300])
 
 # --- Quality ---
 quality_buruk = fuzzy.trapmf(quality_x, [0, 0, 20, 40])
